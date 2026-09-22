@@ -1,12 +1,12 @@
 #! /bin/bash
-PSQL="psql --username=freecodecamp --dbname=<periodic_table> -t --no-align -c"
+PSQL="psql --username=freecodecamp --dbname=periodic_table -t --no-align -c"
 
 if [[ -z $1 ]]; then
   echo "Please provide an element as an argument."
   exit 0
 fi
 
-if [[ $1 = ^[0-9]+$ ]]; then
+if [[ $1 =~ ^[0-9]+$ ]]; then
   WHERE_CLAUSE="e.atomic_number = $1"
 else
   WHERE_CLAUSE="e.symbol = '$1' OR e.name = '$1'"
@@ -16,5 +16,4 @@ RESULT=$($PSQL "SELECT e.atomic_number, e.name, e.symbol, t.type, p.atomic_mass,
 
 IFS="|" read ATOMIC_NUMBER NAME SYMBOL TYPE MASS MELTING BOILING <<< "$RESULT"
 
-echo "the element with the atomic number $ATOMIC_NUMBER is $NAME ($SYMBOL). It's a $TYPE with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
-
+echo "The element with atomic number $ATOMIC_NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
